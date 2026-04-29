@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { MessageWithUser } from "@/types/message";
 
@@ -20,35 +21,24 @@ function formatTime(iso: string) {
 }
 
 export function MessageItem({ message, isOwn, canDelete, onDelete }: MessageItemProps) {
+  const name = message.user.name ?? "Unknown";
+
   return (
     <div className="group flex items-start gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-zinc-700/20">
       {/* 아바타 */}
-      <div className="relative h-9 w-9 rounded-full overflow-hidden shrink-0 mt-0.5">
-        {message.user.image ? (
-          <Image
-            src={message.user.image}
-            alt={message.user.name ?? "user"}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center bg-[#5865f2] text-white text-sm font-semibold">
-            {(message.user.name ?? "?").charAt(0).toUpperCase()}
-          </span>
-        )}
-      </div>
+      <Avatar className="size-9 mt-0.5 shrink-0">
+        <AvatarImage src={message.user.image ?? undefined} alt={name} />
+        <AvatarFallback className="bg-[#5865f2] text-white text-sm font-semibold">
+          {name.charAt(0).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
 
       {/* 본문 */}
       <div className="flex-1 min-w-0">
         {/* 이름 + 시간 */}
         <div className="flex items-baseline gap-2 mb-0.5">
-          <span
-            className={cn(
-              "text-sm font-semibold",
-              isOwn ? "text-[#5865f2]" : "text-white"
-            )}
-          >
-            {message.user.name ?? "Unknown"}
+          <span className={cn("text-sm font-semibold", isOwn ? "text-[#5865f2]" : "text-white")}>
+            {name}
           </span>
           <span className="text-[11px] text-zinc-500">{formatTime(message.createdAt)}</span>
         </div>
@@ -65,19 +55,14 @@ export function MessageItem({ message, isOwn, canDelete, onDelete }: MessageItem
             )}
             {message.imageUrl && (
               <div className="mt-2 relative h-48 max-w-xs rounded-lg overflow-hidden">
-                <Image
-                  src={message.imageUrl}
-                  alt="첨부 이미지"
-                  fill
-                  className="object-cover"
-                />
+                <Image src={message.imageUrl} alt="첨부 이미지" fill className="object-cover" />
               </div>
             )}
           </>
         )}
       </div>
 
-      {/* 삭제 버튼 (hover 시 표시) */}
+      {/* 삭제 버튼 */}
       {canDelete && !message.deleted && (
         <button
           onClick={onDelete}
