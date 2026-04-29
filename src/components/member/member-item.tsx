@@ -35,6 +35,7 @@ export function MemberItem({ member, serverId, isOnline, isAdmin, isCurrentUser 
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +49,8 @@ export function MemberItem({ member, serverId, isOnline, isAdmin, isCurrentUser 
 
   const canChangeRole = isAdmin && !isCurrentUser && member.role !== "ADMIN";
   const name = member.user.name ?? "Unknown";
+  // null, 빈 문자열, 로드 실패 모두 Fallback으로
+  const showImage = !!member.user.image && member.user.image !== "" && !imgError;
 
   async function handleRoleChange(newRole: "MODERATOR" | "GUEST") {
     setLoading(true);
@@ -76,7 +79,13 @@ export function MemberItem({ member, serverId, isOnline, isAdmin, isCurrentUser 
         {/* 아바타 + 온라인 표시 */}
         <div className="relative shrink-0">
           <Avatar>
-            <AvatarImage src={member.user.image ?? undefined} alt={name} />
+            {showImage && (
+              <AvatarImage
+                src={member.user.image!}
+                alt={name}
+                onError={() => setImgError(true)}
+              />
+            )}
             <AvatarFallback className="bg-[#5865f2] text-white text-xs font-semibold">
               {name.charAt(0).toUpperCase()}
             </AvatarFallback>
