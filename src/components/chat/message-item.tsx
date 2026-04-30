@@ -22,14 +22,15 @@ function formatTime(iso: string) {
 
 export function MessageItem({ message, isOwn, canDelete, onDelete }: MessageItemProps) {
   const name = message.user.name ?? "Unknown";
+  const fallbackText = (name?.trim() ? name.charAt(0) : "?").toUpperCase();
 
   return (
     <div className="group flex items-start gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-zinc-700/20">
       {/* 아바타 */}
-      <Avatar className="size-9 mt-0.5 shrink-0">
+      <Avatar className="size-9 mt-0.5 shrink-0 overflow-hidden">
         <AvatarImage src={message.user.image ?? undefined} alt={name} />
-        <AvatarFallback delay={0} className="bg-[#5865f2] text-white text-sm font-semibold">
-          {(name?.charAt(0) || "?").toUpperCase()}
+        <AvatarFallback delay={0} className="bg-[#5865f2] text-white text-sm font-semibold flex items-center justify-center">
+          {fallbackText}
         </AvatarFallback>
       </Avatar>
 

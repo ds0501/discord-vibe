@@ -48,6 +48,7 @@ export function MemberItem({ member, serverId, isOnline, isAdmin, isCurrentUser 
 
   const canChangeRole = isAdmin && !isCurrentUser && member.role !== "ADMIN";
   const name = member.user.name ?? "Unknown";
+  const fallbackText = (name?.trim() ? name.charAt(0) : "?").toUpperCase();
 
   async function handleRoleChange(newRole: "MODERATOR" | "GUEST") {
     setLoading(true);
@@ -75,10 +76,10 @@ export function MemberItem({ member, serverId, isOnline, isAdmin, isCurrentUser 
       >
         {/* 아바타 + 온라인 표시 */}
         <div className="relative shrink-0">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8 overflow-hidden">
             <AvatarImage src={member.user.image ?? undefined} alt={name} />
-            <AvatarFallback delay={0} className="bg-[#5865f2] text-white text-xs font-semibold">
-              {(name?.charAt(0) || "?").toUpperCase()}
+            <AvatarFallback delay={0} className="bg-[#5865f2] text-white text-xs font-semibold flex items-center justify-center">
+              {fallbackText}
             </AvatarFallback>
           </Avatar>
           <span
