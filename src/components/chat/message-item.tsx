@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -22,24 +21,15 @@ function formatTime(iso: string) {
 }
 
 export function MessageItem({ message, isOwn, canDelete, onDelete }: MessageItemProps) {
-  const [imgError, setImgError] = useState(false);
   const name = message.user.name ?? "Unknown";
-  // null, 빈 문자열, 로드 실패 모두 Fallback으로
-  const showImage = !!message.user.image && message.user.image !== "" && !imgError;
 
   return (
     <div className="group flex items-start gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-zinc-700/20">
       {/* 아바타 */}
       <Avatar className="size-9 mt-0.5 shrink-0">
-        {showImage && (
-          <AvatarImage
-            src={message.user.image!}
-            alt={name}
-            onError={() => setImgError(true)}
-          />
-        )}
-        <AvatarFallback className="bg-[#5865f2] text-white text-sm font-semibold">
-          {name.charAt(0).toUpperCase()}
+        <AvatarImage src={message.user.image ?? undefined} alt={name} />
+        <AvatarFallback delay={0} className="bg-[#5865f2] text-white text-sm font-semibold">
+          {(name?.charAt(0) || "?").toUpperCase()}
         </AvatarFallback>
       </Avatar>
 
